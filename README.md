@@ -8,17 +8,15 @@ Usage
 
     ItCloudSms.send_sms(:login => "login",
                         :password => "password", 
-                        :from => "Max 11chars",
-                        :destination => "0034999999999",
-                        :message => "Message with 140 chars maximum")
+                        :destination => "0057.." || ["0057...","0057..."],
+                        :message => "Message with 159 chars maximum")
 
 - __Login__: supplied by IT Cloud Colombia.
 - __Password__: supplied by IT Cloud Colombia.
-- __From__: source SMS. Maximum 11 characters. Could be your company's name or source telephone number.
-- __Destination__: destination number, international format.
+- __Destination__: destination numbers, international format. If an Array is passed, SMS will be sent to all numbers.
 - __Message__: Message to send, maximum 159 characters.
 
-If message is sent correctly, it will return true. Otherwise, error code is returned.
+If message is sent correctly, it will return operation code. Otherwise, an Exception will be raised.
 
 More information
 ----------------
