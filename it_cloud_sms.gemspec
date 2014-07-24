@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name          = 'it_cloud_sms'
-  s.version       = '0.0.1'
-  s.date          = '2014-07-23'
+  s.version       = '0.1.0'
+  s.date          = '2014-07-24'
   s.summary       = 'IT Cloud Services Colombia send SMS HTTP gateway'
   s.description   = 'A gateway to send SMS using HTTP POST, through IT Cloud Services Colombia, written in ruby'
   s.files         = ['lib/it_cloud_sms.rb']
