@@ -64,26 +64,30 @@ module ItCloudSms
 
       response = http.request(request)
       if response.code == "200"
-        case response.body
-        when "-1" then
-          raise StandardError, "Authentication failed"
-        when "-2" then
-          raise StandardError, "Out of hours"
-        when "-3" then
-          raise StandardError, "No credit"
-        when "-4" then
-          raise StandardError, "Wrong number"
-        when "-5" then
-          raise StandardError, "Wrong message"
-        when "-6" then
-          raise StandardError, "System under maintenance"
-        when "-7" then
-          raise StandardError, "Max cellphones reached"
-        when "0" then
-          raise StandardError, "Operator not found"
-        else
-          return response.body
+        result = response.body.split("<br>").map{ |a| a.split(",") }.map{ |res| {:telephone => res[0].strip, :code => res[1].strip }}
+        result.each do |destination|
+          case destination[:code]
+          when "-1" then
+            destination[:description] = "Authentication failed"
+          when "-2" then
+            destination[:description] = "Out of hours"
+          when "-3" then
+            destination[:description] = "No credit"
+          when "-4" then
+            destination[:description] = "Wrong number"
+          when "-5" then
+            destination[:description] = "Wrong message"
+          when "-6" then
+            destination[:description] = "System under maintenance"
+          when "-7" then
+            destination[:description] = "Max cellphones reached"
+          when "0" then
+            destination[:description] = "Operator not found"
+          else
+            destination[:description] = "OK"
+          end
         end
+        return result
       else
         raise RuntimeError, "Server responded with code #{response.code}: #{response.body}"
       end
