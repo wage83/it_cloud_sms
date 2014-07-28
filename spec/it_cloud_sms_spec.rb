@@ -4,11 +4,11 @@ describe ItCloudSms do
 
   context "when arguments are incorrect" do
     it "should raise an ArgumentError if no login present" do
-      proc { ItCloudSms.send_sms(:password => "bar", :destination => "0034666666666", :message => "Lore ipsum") }.should raise_exception(ArgumentError, "Login must be present")
+      proc { ItCloudSms.send_sms(:password => "bar", :destination => "+34666666666", :message => "Lore ipsum") }.should raise_exception(ArgumentError, "Login must be present")
     end
 
     it "should raise an ArgumentError if no password present" do
-      proc { ItCloudSms.send_sms(:login => "foo", :destination => "0034666666666", :message => "Lore ipsum") }.should raise_exception(ArgumentError, "Password must be present")
+      proc { ItCloudSms.send_sms(:login => "foo", :destination => "+34666666666", :message => "Lore ipsum") }.should raise_exception(ArgumentError, "Password must be present")
     end
 
     it "should raise an ArgumentError if destination is not a valid international number" do
@@ -16,11 +16,11 @@ describe ItCloudSms do
     end
 
     it "should raise an ArgumentError if no message present" do
-      proc { ItCloudSms.send_sms(:login => "foo", :password => "bar", :destination => "0034666666666") }.should raise_exception(ArgumentError, "Message must be present")
+      proc { ItCloudSms.send_sms(:login => "foo", :password => "bar", :destination => "+34666666666") }.should raise_exception(ArgumentError, "Message must be present")
     end
 
     it "should raise an ArgumentError if message is more than 140 characters" do
-      proc { ItCloudSms.send_sms(:login => "foo", :password => "bar", :destination => "0034666666666", :message => "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas commodo mattis ligula vitae malesuada. Vestibulum vulputate eros et lacus condimentum suscipit. Nulla cursus orci ac mauris ullamcorper gravida. Nullam neque lacus, facilisis ac tellus eget, congue consectetur turpis. Sed fringilla, dui nec facilisis lobortis, turpis neque volutpat leo, in ultrices orci lacus vel lacus. Sed dapibus tortor sit amet leo vulputate, sit amet facilisis felis fringilla. Nunc ultricies pulvinar nisi, non iaculis nibh condimentum at. In urna ipsum, condimentum quis purus ac, mollis pharetra mi.") }.should raise_exception(ArgumentError, "Message is 159 chars maximum")
+      proc { ItCloudSms.send_sms(:login => "foo", :password => "bar", :destination => "+34666666666", :message => "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas commodo mattis ligula vitae malesuada. Vestibulum vulputate eros et lacus condimentum suscipit. Nulla cursus orci ac mauris ullamcorper gravida. Nullam neque lacus, facilisis ac tellus eget, congue consectetur turpis. Sed fringilla, dui nec facilisis lobortis, turpis neque volutpat leo, in ultrices orci lacus vel lacus. Sed dapibus tortor sit amet leo vulputate, sit amet facilisis felis fringilla. Nunc ultricies pulvinar nisi, non iaculis nibh condimentum at. In urna ipsum, condimentum quis purus ac, mollis pharetra mi.") }.should raise_exception(ArgumentError, "Message is 159 chars maximum")
     end
   end
 
@@ -36,7 +36,7 @@ describe ItCloudSms do
     end
 
     it "should return result Hash when sending correctly a petition" do
-      destinations = %w(0034666666660 0034666666661 0034666666662 0034666666663 0034666666664 0034666666665 0034666666666 0034666666667 0034666666668)
+      destinations = %w(+34666666660 +34666666661 +34666666662 +34666666663 +34666666664 +34666666665 +34666666666 +34666666667 +34666666668)
       response = Object.new
       response.stub!(:code).and_return("200")
       response.stub!(:body).and_return(destinations.each_with_index.map{ |d,i| "#{d},#{i-7}"}.join("<br>"))
@@ -64,7 +64,7 @@ describe ItCloudSms do
       response.stub!(:body).and_return("12345")
       @http.should_receive(:request).with(@request).and_return(response)
 
-      proc { ItCloudSms.send_sms(:message => "Lorem Ipsum", :destination => "0034666666666").should == true }.should_not raise_exception(ArgumentError)
+      proc { ItCloudSms.send_sms(:message => "Lorem Ipsum", :destination => "+34666666666").should == true }.should_not raise_exception(ArgumentError)
     end
   end
 
@@ -82,7 +82,7 @@ describe ItCloudSms do
         response.stub!(:code).and_return("400")
         response.stub!(:body).and_return("Error")
         @http.should_receive(:request).with(@request).and_return(response)
-        ItCloudSms.send_sms(:login => "foo", :password => "bar", :destination => "0034666666666", :message => "Lore ipsum").should raise_exception(RuntimeError)
+        ItCloudSms.send_sms(:login => "foo", :password => "bar", :destination => "+34666666666", :message => "Lore ipsum").should raise_exception(RuntimeError)
       }
     end
   end

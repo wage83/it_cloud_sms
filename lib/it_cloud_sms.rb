@@ -1,9 +1,9 @@
-require 'phone'
+require 'active_support'
+require 'global_phone'
 require 'net/https'
 
 module ItCloudSms
 
-  PhoneFormat = "%c%a%n"
   APIUri = URI.parse("https://sistemasmasivos.com/itcloud/api/sendsms/send.php")
 
   class << self
@@ -25,7 +25,7 @@ module ItCloudSms
     # Example:
     #   >> ItCloudSms.send_sms(:login => "login",
     #                          :password => "password", 
-    #                          :destination => "573102111111" || ["573102111111", "573102111112"], # Up to 500 numbers
+    #                          :destination => "+573102111111" || ["+573102111111", "+573102111112"], # Up to 500 numbers
     #                          :message => "Message with 159 chars maximum")
     def send_sms(options = {})
       # Check for login
@@ -44,8 +44,8 @@ module ItCloudSms
 
       destinations = []
       options[:destination].each do |phone|
-        raise ArgumentError, "Recipient must be a telephone number with international format: #{phone.to_s}" unless Phoner::Phone.valid?(phone.to_s)
-        destinations << Phoner::Phone.parse(phone.to_s).format(PhoneFormat)
+        raise ArgumentError, "Recipient must be a telephone number with international format: #{phone.to_s}" unless parsed = GlobalPhone.parse(phone.to_s)
+        destinations << parsed.international_string.gsub("+", "") # Remove + from international string
       end
 
       message = options[:message].to_s

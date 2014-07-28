@@ -8,7 +8,7 @@ Usage
 
     ItCloudSms.send_sms(:login => "login",
                         :password => "password", 
-                        :destination => "0057.." || ["0057...","0057..."],
+                        :destination => "+57.." || ["+57...","+57..."],
                         :message => "Message with 159 chars maximum")
 
 - __Login__: supplied by IT Cloud Colombia.
