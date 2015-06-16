@@ -66,6 +66,29 @@ describe ItCloudSms do
 
       proc { ItCloudSms.send_sms(:message => "Lorem Ipsum", :destination => "+34666666666").should == true }.should_not raise_exception(ArgumentError)
     end
+
+    it "should return error code" do
+      response = Object.new
+      response.stub!(:code).and_return("200")
+      response.stub!(:body).and_return("-1")
+      @http.should_receive(:request).with(@request).and_return(response)
+
+      result = ItCloudSms.send_sms(:login => "foo", :password => "bar", :destination => ["+34666666660"], :message => "Lore ipsum")
+      result.last[:code].should == "-1"
+      result.last[:description].should == "Authentication failed"
+    end
+
+    it "should return unknown error" do
+      response = Object.new
+      response.stub!(:code).and_return("200")
+      response.stub!(:body).and_return("Apache failure")
+      @http.should_receive(:request).with(@request).and_return(response)
+
+      result = ItCloudSms.send_sms(:login => "foo", :password => "bar", :destination => ["+34666666660"], :message => "Lore ipsum")
+      result.last[:code].should == "Apache failure"
+      result.last[:description].should == "Unknown error"
+    end
+
   end
 
   context "when server is down" do

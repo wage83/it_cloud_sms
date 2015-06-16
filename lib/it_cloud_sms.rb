@@ -64,7 +64,12 @@ module ItCloudSms
 
       response = http.request(request)
       if response.code == "200"
-        result = response.body.split("<br>").map{ |a| a.split(",") }.map{ |res| {:telephone => res[0].strip, :code => res[1].strip }}
+        begin
+          result = response.body.split("<br>").map{ |a| a.split(",") }.map{ |res| {:telephone => res[0].strip, :code => res[1].strip }}
+        rescue
+          # Try to get petition result
+          result = [{:code => response.body}]
+        end
         result.each do |destination|
           case destination[:code]
           when "-1" then
@@ -84,7 +89,11 @@ module ItCloudSms
           when "0" then
             destination[:description] = "Operator not found"
           else
-            destination[:description] = "OK"
+            if destination[:code].to_i == 0
+              destination[:description] = "Unknown error"
+            else
+              destination[:description] = "OK"
+            end
           end
         end
         return result
