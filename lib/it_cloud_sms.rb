@@ -45,7 +45,11 @@ module ItCloudSms
       destinations = []
       options[:destination].each do |phone|
         raise ArgumentError, "Recipient must be a telephone number with international format: #{phone.to_s}" unless parsed = GlobalPhone.parse(phone.to_s)
-        destinations << parsed.international_string.gsub("+", "") # Remove + from international string
+        if parsed.international_string.to_s =~ /^\+1/
+          destinations << parsed.international_string.gsub(/^\+1/, "01") # Replace initial +1 with 01 for IT Cloud requirements
+        else
+          destinations << parsed.international_string.gsub("+", "") # Remove + from international string
+        end
       end
 
       message = options[:message].to_s
