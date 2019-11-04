@@ -64,7 +64,8 @@ module ItCloudSms
       request.set_form_data({'user' => login,
                              'password' => password,
                              'GSM' => destinations.join(","),
-                             'SMSText' => message})
+                             'SMSText' => message,
+                             'individualws' => ((destinations.size == 1) ? "1" : "0")})
 
       response = http.request(request)
       if response.code == "200"
