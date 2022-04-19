@@ -19,8 +19,8 @@ describe ItCloudSms do
       proc { ItCloudSms.send_sms(:login => "foo", :password => "bar", :destination => "+34666666666") }.should raise_exception(ArgumentError, "Message must be present")
     end
 
-    it "should raise an ArgumentError if message is more than 140 characters" do
-      proc { ItCloudSms.send_sms(:login => "foo", :password => "bar", :destination => "+34666666666", :message => "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas commodo mattis ligula vitae malesuada. Vestibulum vulputate eros et lacus condimentum suscipit. Nulla cursus orci ac mauris ullamcorper gravida. Nullam neque lacus, facilisis ac tellus eget, congue consectetur turpis. Sed fringilla, dui nec facilisis lobortis, turpis neque volutpat leo, in ultrices orci lacus vel lacus. Sed dapibus tortor sit amet leo vulputate, sit amet facilisis felis fringilla. Nunc ultricies pulvinar nisi, non iaculis nibh condimentum at. In urna ipsum, condimentum quis purus ac, mollis pharetra mi.") }.should raise_exception(ArgumentError, "Message is 159 chars maximum")
+    it "should raise an ArgumentError if message is more than 765 characters" do
+      proc { ItCloudSms.send_sms(:login => "foo", :password => "bar", :destination => "+34666666666", :message => "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas commodo mattis ligula vitae malesuada. Vestibulum vulputate eros et lacus condimentum suscipit. Nulla cursus orci ac mauris ullamcorper gravida. Nullam neque lacus, facilisis ac tellus eget, congue consectetur turpis. Sed fringilla, dui nec facilisis lobortis, turpis neque volutpat leo, in ultrices orci lacus vel lacus. Sed dapibus tortor sit amet leo vulputate, sit amet facilisis felis fringilla. Nunc ultricies pulvinar nisi, non iaculis nibh condimentum at. In urna ipsum, condimentum quis purus ac, mollis pharetra mi. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas commodo mattis ligula vitae malesuada. Vestibulum vulputate. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.") }.should raise_exception(ArgumentError, "Message is 765 chars maximum")
     end
   end
 
