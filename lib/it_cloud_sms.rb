@@ -4,7 +4,7 @@ require 'net/https'
 
 module ItCloudSms
 
-  APIUri = URI.parse("https://sistemasmasivos.com/itcloud/api/sendsms/send.php")
+  APIUri = URI.parse("https://contacto-masivo.com/sms/back_sms/public/api/sendsms")
 
   class << self
 
@@ -25,8 +25,8 @@ module ItCloudSms
     # Example:
     #   >> ItCloudSms.send_sms(:login => "login",
     #                          :password => "password", 
-    #                          :destination => "+573102111111" || ["+573102111111", "+573102111112"], # Up to 500 numbers
-    #                          :message => "Message with 159 chars maximum")
+    #                          :destination => "+573102111111" || ["+573102111111", "+573102111112"], # Up to 5000 numbers
+    #                          :message => "Message with 765 chars maximum")
     def send_sms(options = {})
       # Check for login
       login = options[:login] || @@login
@@ -40,7 +40,7 @@ module ItCloudSms
       options[:destination] = [options[:destination]] unless options[:destination].kind_of?(Array)
 
       # Check for max destinations
-      raise ArgumentError, "Max of 500 destinations exceeded" if (options[:destination].size > 500)
+      raise ArgumentError, "Max of 5000 destinations exceeded" if (options[:destination].size > 5000)
 
       destinations = []
       options[:destination].each do |phone|
@@ -54,7 +54,7 @@ module ItCloudSms
 
       message = options[:message].to_s
       raise ArgumentError, "Message must be present" if message.blank?
-      raise ArgumentError, "Message is 159 chars maximum" if message.size > 159
+      raise ArgumentError, "Message is 765 chars maximum" if message.size > 765
 
       http = Net::HTTP.new(APIUri.host, APIUri.port)
       http.use_ssl = true
@@ -62,10 +62,10 @@ module ItCloudSms
 
       request = Net::HTTP::Post.new(APIUri.request_uri)
       request.set_form_data({'user' => login,
-                             'password' => password,
+                             'token' => password,
                              'GSM' => destinations.join(","),
                              'SMSText' => message,
-                             'individualws' => ((destinations.size == 1) ? "1" : "0")})
+                             'metodo_envio' => '1via'})
 
       response = http.request(request)
       if response.code == "200"
@@ -91,13 +91,19 @@ module ItCloudSms
             destination[:description] = "System under maintenance"
           when "-7" then
             destination[:description] = "Max cellphones reached"
-          when "0" then
-            destination[:description] = "Operator not found"
+          when "-8" then
+            destination[:description] = "Cellphone number in black list"
+          when "-9" then
+            destination[:description] = "message rejected for content"
+          when "-10" then
+            destination[:description] = "Message with no link authorized"
+          when "-11" then
+            destination[:description] = "Error in metodo_envio variable"
           else
-            if destination[:code].to_i == 0
-              destination[:description] = "Unknown error"
-            else
+            if destination[:code].to_i > 0
               destination[:description] = "OK"
+            else
+              destination[:description] = "Unknown error"
             end
           end
         end
